@@ -4,27 +4,197 @@
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
+    <meta name="description" content="Check prices of rice in stores near you in real time with this web application.">
+    <title>KanoDi</title>
+    <link rel="shortcut icon" type="image/png" href="images/favicon-32x32.png"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Alata&family=Poppins:wght@400;500;700&display=swap"
+      rel="stylesheet"
+    />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" />
+    <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
-    <h1>Todos</h1>
-    <ul>
-    <% todos.forEach( el => { %>
-        <li class='todoItem' data-id='<%=el._id%>'>
-            <span class='<%= el.completed === true ? 'completed' : 'not'%>'><%= el.todo %></span>
-            <span class='del'> Delete </span>
-        </li>
-    <% }) %>    
-    </ul>
+  <!-- Nav Container -->
+  <nav class="relative container mx-auto p-6">
+    <!-- Flex Container For All Items -->
+    <div class="flex items-center justify-between">
+      <!-- Flex Container For Logo/Menu -->
+      <div class="flex items-center space-x-20">
+        <!-- Logo -->
+        <a href="/"><img src="images/logo.svg" alt="Logo" /></a>
+        <!-- Left Menu -->
+        <div class="hidden space-x-8 font-bold lg:flex">
+          <a href="#" class="text-slate-400 hover:text-veryDarkViolet">Features</a>
+          <a href="#" class="text-slate-400 hover:text-veryDarkViolet">Pricing</a>
+          <a href="#" class="text-slate-400 hover:text-veryDarkViolet">Resources</a>
+        </div>
+      </div>
 
-    <h2>Things left to do: <%= left %></h2>
+      <!-- Right Buttons Menu -->
+      <div class="hidden items-center space-x-6 font-bold text-slate-400 lg:flex">
+        <div class="hover:text-veryDarkViolet">Login</div>
+        <a href="#" class="px-8 py-3 font-bold text-white bg-cyan-400 rounded-full hover:opacity-70">Sign Up</a>
+      </div>
 
-    <form action="/todos/createTodo" method='POST'>
-        <input type="text" placeholder="Enter Todo Item" name='todoItem'>
-        <input type="submit">
-    </form>
+      <!-- Hamburger Button -->
+      <button id="menu-btn" class="block hamburger lg:hidden focus:outline-none" type="button">
+        <span class="hamburger-top"></span>
+        <span class="hamburger-middle"></span>
+        <span class="hamburger-bottom"></span>
+      </button>
+    </div>
 
-    <script src="js/main.js"></script>
+    <!-- Mobile Menu -->
+    <div id="menu" class="absolute hidden p-6 rounded-lg bg-violet-900 left-6 right-6 top-20 z-100">
+      <div class="flex flex-col items-center justify-center w-full space-y-6 font-bold text-white rounded-sm">
+        <a href="#" class="w-full text-center">Features</a>
+        <a href="#" class="w-full text-center">Pricing</a>
+        <a href="#" class="w-full text-center">Resources</a>
+        <a href="#" class="w-full pt-6 border-t border-gray-400 text-center">Login</a>
+        <a href="#" class="w-full py-3 text-center rounded-full bg-cyan">Sign Up</a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Shorten Section -->
+  <section id="shorten" class="relative bg-gray-100">
+    <!-- Shorten Container -->
+    <div class="max-w-4xl mx-auto p-6 space-y-6">
+      <!-- Form -->
+      <form id="link-form"
+        class="relative flex flex-col w-full p-10 space-y-4 bg-violet-900 rounded-lg md:flex-row md:space-y-0 md:space-x-3" action="/todos/createTodo" method="POST">
+<!--         <select class="required flex-1 p-3 border-2 rounded-lg placeholder-yellow-500 focus:outline-none">
+          <option></option>
+        </select> -->
+        <input class="required flex-1 p-3 border-2 rounded-lg placeholder-yellow-500 focus:outline-none" type="text" name="storeLocation"
+          placeholder="Add store address here" id="link-input" />
+        <input class="required flex-1 p-3 border-2 rounded-lg placeholder-yellow-500 focus:outline-none" type="text" name="storePrice"
+          placeholder="Enter price here" id="link-input" />
+        <button class="px-10 py-3 text-white bg-cyan-400 rounded-lg hover:bg-cyan-300 focus:outline-none md:py-2">
+          Add
+        </button>
+
+        <!-- Error Message -->
+        <div id="err-msg" class="absolute left-7 bottom-3 text-red text-sm italic"></div>
+      </form>
+
+
+      <!-- Link 1 -->
+      <% for(let i = 0; i < todos.length; i++) { %>
+        <div class="flex flex-row items-center justify-between w-full p-6 bg-white rounded-lg md:flex-row" data-id="<%= todos[i]._id %>">
+          <div class="flex flex-row basis-3/4 items-center justify-between flex-1 space-x-4 space-y-2 md:flex-row md:space-y-0">
+            <p class="basis-2/4 storeLocation font-bold text-center text-veryDarkViolet md:text-left">
+              <%= todos[i].storeLocation %></p>
+            <div class=" storePrice font-bold text-cyan-400"><%= todos[i].storePrice %></div>
+            <input class="basis-1/4 border-cyan-400 bg-slate-100" type="text" name="priceUpdate"
+            placeholder="Update price here" id="">
+            <button type="submit"
+              class="updateButton p-2 px-8 text-white bg-cyan-400 rounded-lg hover:opacity-70 focus:outline-none">
+              Update Price
+            </button>
+          </div>
+          <div class="flex flex-row items-center justify-center flex-1 space-x-4 space-y-2 md:flex-row md:space-y-0">
+            <span title="Did this info help you? Leave a star to let others know the price is right" class="fa fa-star text-violet-800 hover:text-violet-500">
+              (<span><%= todos[i].stars %></span>)
+            </span> 
+            <span title="Delete" class="fa fa-trash text-violet-800 hover:text-violet-500"></span>
+          </div>
+  
+        </div>
+      <% } %>
+
+      <!-- Link 2 -->
+      <!-- <div class="flex flex-col items-center justify-between w-full p-6 bg-white rounded-lg md:flex-row">
+        <p class="font-bold text-center text-veryDarkViolet md:text-left">
+          https://twitter.com/frontendmentor
+        </p>
+
+        <div class="flex flex-col items-center justify-end flex-1 space-x-4 space-y-2 md:flex-row md:space-y-0">
+          <div class="font-bold text-cyan-400">https://rel.ink/gxOXp9</div>
+          <button class="p-2 px-8 text-white bg-violet-900 rounded-lg hover:opacity-70 focus:outline-none">
+            Copy
+          </button>
+        </div>
+      </div> -->
+
+      <!-- Link 3 -->
+      <!-- <div class="flex flex-col items-center justify-between w-full p-6 bg-white rounded-lg md:flex-row">
+        <p class="font-bold text-center text-veryDarkViolet md:text-left">
+          https://linkedin.com/frontend-mentor
+        </p>
+
+        <div class="flex flex-col items-center justify-end flex-1 space-x-4 space-y-2 md:flex-row md:space-y-0">
+          <div class="font-bold text-cyan-400">https://rel.ink/gob3X9</div>
+          <button class="p-2 px-8 text-white bg-cyan-400 rounded-lg hover:opacity-70 focus:outline-none">
+            Copy
+          </button>
+        </div>
+      </div>
+    </div> -->
+  </section>
+
+  <footer class="py-16 bg-slate-900">
+    <div
+      class="container flex flex-col items-center justify-between mx-auto space-y-16 md:flex-row md:space-y-0 md:items-start">
+      <!-- Logo -->
+      <img src="images/logo.svg" alt="" />
+
+      <!-- Menus Container -->
+      <div class="flex flex-col space-y-16 md:space-x-20 md:flex-row md:space-y-0">
+        <!-- Menu 1 -->
+        <div class="flex flex-col items-center w-full md:items-start">
+          <div class="mb-5 font-bold text-white capitalize">Features</div>
+          <div class="flex flex-col items-center space-y-3 md:items-start">
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Link shortening</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Branded links</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Analytics</a>
+          </div>
+        </div>
+
+        <!-- Menu 2 -->
+        <div class="flex flex-col items-center w-full md:items-start">
+          <div class="mb-5 font-bold text-white capitalize">Resources</div>
+          <div class="flex flex-col items-center space-y-3 md:items-start">
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Blog</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Developers</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Support</a>
+          </div>
+        </div>
+
+        <!-- Menu 3 -->
+        <div class="flex flex-col items-center w-full md:items-start">
+          <div class="mb-5 font-bold text-white capitalize">Company</div>
+          <div class="flex flex-col items-center space-y-3 md:items-start">
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">About</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Our Team</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Careers</a>
+            <a href="#" class="capitalize text-slate-400 hover:text-cyan-400">Contact</a>
+          </div>
+        </div>
+      </div>
+
+      <!-- Social Container -->
+      <div class="flex space-x-6">
+        <a href="#">
+          <img src="images/icon-facebook.svg" alt="" class="ficon" />
+        </a>
+        <a href="#">
+          <img src="images/icon-twitter.svg" alt="" class="ficon" />
+        </a>
+        <a href="#">
+          <img src="images/icon-pinterest.svg" alt="" class="ficon" />
+        </a>
+        <a href="#">
+          <img src="images/icon-instagram.svg" alt="" class="ficon" />
+        </a>
+      </div>
+    </div>
+  </footer>
+
+    <script src='js/main.js'></script>
 </body>
 </html>

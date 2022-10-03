@@ -12,9 +12,31 @@ module.exports = {
     },
     createTodo: async (req, res)=>{
         try{
-            await Todo.create({todo: req.body.todoItem, completed: false})
+            await Todo.create({storeLocation: req.body.storeLocation, storePrice: Number(req.body.storePrice), stars: 0}) //completed: false
             console.log('Todo has been added!')
             res.redirect('/todos')
+        }catch(err){
+            console.log(err)
+        }
+    },
+    updatePrice: async (req, res)=>{
+        try{
+            await Todo.findOneAndUpdate({_id: req.body.todoIdFromJSFile}, {
+                storePrice: req.body.priceFromJSFile
+            })
+            console.log('Price Updated')
+            res.json('Price Updated')
+        }catch(err){
+            console.log(err)
+        }
+    },
+    addStar: async (req, res)=>{
+        try{
+            await Todo.findOneAndUpdate({_id: req.body.todoIdFromJSFile}, {
+                stars: req.body.starsFromJSFile + 1
+            })
+            console.log('Added One Star')
+            res.json('Added One Star')
         }catch(err){
             console.log(err)
         }
@@ -51,4 +73,4 @@ module.exports = {
             console.log(err)
         }
     }
-}    
+}
